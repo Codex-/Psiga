@@ -1,11 +1,15 @@
 ﻿/// <summary>
 /// Copyright (C) 2015 Matthew Ready.
 /// </summary>
+
 using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using Gtk;
 using Gdk;
+using Psiga.Properties;
 using PsigaPkgLib;
 using PsigaPkgLib.Entries;
 
@@ -58,16 +62,26 @@ namespace Psiga
 
 		public EntriesWidget()
 		{
+            Gdk.Pixbuf ImageToPixbuf(System.Drawing.Image image)
+            {
+                using (var stream = new MemoryStream())
+                {
+                    image.Save(stream, ImageFormat.Bmp);
+                    stream.Position = 0;
+                    return new Pixbuf(stream);
+                }
+            }
+
 			packages = new Dictionary<string, PackageReference.Files>();
 			typeImages = new Dictionary<EntryType, Pixbuf>() {
-				{ EntryType.Atlas, new Pixbuf("./img/atlas.png") },
-				{ EntryType.Bink, new Pixbuf("./img/bink.png") },
-				{ EntryType.BinkAtlas, new Pixbuf("./img/bink-atlas.png") },
-				{ EntryType.IncludePackage, new Pixbuf("./img/include-package.png") },
-				{ EntryType.Texture, new Pixbuf("./img/texture.png") },
-				{ EntryType.Texture3D, new Pixbuf("./img/texture3d.png") },
-				{ EntryType.Spine, new Pixbuf("./img/spine.png") }
-			};
+                { EntryType.Atlas, ImageToPixbuf(Resources.atlas)},
+                { EntryType.Bink, ImageToPixbuf(Resources.bink) },
+                { EntryType.BinkAtlas, ImageToPixbuf(Resources.bink_atlas) },
+                { EntryType.IncludePackage, ImageToPixbuf(Resources.include_package) },
+                { EntryType.Texture, ImageToPixbuf(Resources.texture) },
+                { EntryType.Texture3D, ImageToPixbuf(Resources.texture3d) },
+                { EntryType.Spine, ImageToPixbuf(Resources.spine) }
+            };
 			propertyView = new PropertyView();
 			textureWidget = new TextureWidget();
 
